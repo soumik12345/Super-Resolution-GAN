@@ -17,12 +17,12 @@ class SRGAN:
             image_dimension[1] // self.downsample_factor,
             image_dimension[2],
         )
-        self.generator = Generator(self.latent_dimension)
-        self.discriminator = Discriminator(self.image_dimension)
+        self.generator = Generator(self.latent_dimension).model
+        self.discriminator = Discriminator(self.image_dimension).model
         self.vgg_loss = VGGLoss(self.image_dimension)
     
 
-    def build_gan(self, generator, discriminator):
+    def build_gan(self):
         """
         Build the SRGAN model
 
@@ -39,19 +39,17 @@ class SRGAN:
         -------
         Combined and Compiled GAN model
         """
-        discriminator.trainable = False
-        
+        self.discriminator.trainable = False
+
         input_placeholder = Input(shape = self.latent_dimension)
         x = self.generator(input_placeholder)
-        output = discriminator(x)
-        
+        output = self.discriminator(x)
         gan = Model(input_placeholder, output)
-        
         gan.compile(
             loss = [
-                vgg_loss.loss,
-                'binary_crossentropy'
-            ], loss_weights = [1., 1e-3],
+                self.vgg_loss.loss
+            ],
+            loss_weights = [1.],
             optimizer = Adam(
                 lr = 1E-4,
                 beta_1 = 0.9,
