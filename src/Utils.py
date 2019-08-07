@@ -48,7 +48,7 @@ class Utils:
     
 
     @staticmethod
-    def downsampling_block(x, filters, kernel_size, strides):
+    def discriminator_block(x, filters, kernel_size, strides):
         x = Conv2D(
             filters = filters,
             kernel_size = kernel_size,
