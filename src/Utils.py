@@ -8,6 +8,7 @@ from tensorflow.keras.layers import (
 from tqdm import tqdm
 from glob import glob
 import cv2
+import numpy as np
 
 
 class Utils:
