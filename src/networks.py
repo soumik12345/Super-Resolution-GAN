@@ -57,7 +57,9 @@ class Generator(object):
         output = Activation('tanh')(x)
 
         self.generator = Model(input_placeholder, output)
-
+    
+    def display(self):
+        self.generator.summary()
 
 
 class Discriminator(object):
@@ -92,4 +94,7 @@ class Discriminator(object):
 
         output = Dense(1, activation = 'sigmoid')(x)
 
-        self.discriminator = Model(input_placeholder, output)   
+        self.discriminator = Model(input_placeholder, output)
+    
+    def display(self):
+        self.discriminator.summary()
