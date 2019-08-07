@@ -7,6 +7,7 @@ from tensorflow.keras.layers import (
 )
 from tqdm import tqdm
 from glob import glob
+import cv2
 
 
 class Utils:
@@ -83,7 +84,7 @@ class Utils:
         for i in tqdm(range(n_images)):
             image = cv2.imread(image_paths[i])
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = normalize(cv2.resize(image, (384, 384)))
+            image = Utils.normalize(cv2.resize(image, (384, 384)))
             x_train.append(image)
         x_train = np.array(x_train)
         for image in tqdm(x_train):
