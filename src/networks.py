@@ -1,8 +1,9 @@
 from src.Utils import Utils
 from tensorflow.keras.layers import (
     Input, Conv2D,
-    PReLU, Activation,
-    BatchNormalization, add
+    PReLU, LeakyReLU, Activation,
+    BatchNormalization, add,
+    Flatten, Dense
 )
 from tensorflow.keras.models import Model
 
@@ -56,3 +57,39 @@ class Generator(object):
         output = Activation('tanh')(x)
 
         self.generator = Model(input_placeholder, output)
+
+
+
+class Discriminator(object):
+
+    def __init__(self, input_shape):
+        self.input_shape = input_shape
+        self.build_model()
+    
+    def build_model(self):
+
+        input_placeholder = Input(shape = self.input_shape)
+
+        x = Conv2D(
+            filters = 64,
+            kernel_size = 3,
+            strides = 1,
+            padding = 'same'
+        )(input_placeholder)
+        x = LeakyReLU(alpha = 0.2)(x)
+
+        x = Utils.discriminator_block(x, 64, 3, 2)
+        x = Utils.discriminator_block(x, 128, 3, 1)
+        x = Utils.discriminator_block(x, 128, 3, 2)
+        x = Utils.discriminator_block(x, 256, 3, 1)
+        x = Utils.discriminator_block(x, 256, 3, 2)
+        x = Utils.discriminator_block(x, 512, 3, 1)
+        x = Utils.discriminator_block(x, 512, 3, 2)
+
+        x = Flatten()(x)
+        x = Dense(1024)(x)
+        x = LeakyReLU(alpha = 0.2)(x)
+
+        output = Dense(1, activation = 'sigmoid')(x)
+
+        self.discriminator = Model(input_placeholder, output)   
